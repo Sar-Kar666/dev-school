@@ -2,11 +2,17 @@
 
 interface ButtonProps {
   children: React.ReactNode,
-  color : String;
+  color : string,
+  variant?: "primary" | "secondary";
 }
-const custom = "border cursor-pointer px-4 py-2 rounded-md flex  items-center"
-export function Button({children,color}: ButtonProps){
+
+const variants = {
+  primary: "border cursor-pointer px-2 py-1 rounded-md flex  items-center",
+  secondary: "border cursor-pointer px-4 py-2 rounded-md flex  items-center",
+};
+
+export function Button({children,color,variant}: ButtonProps){
     return<div>
-            <button className={`${custom} ${color}`}>{children}</button>
+            <button className={`$${variants[variant]} ${color}`}>{children}</button>
     </div>
 }

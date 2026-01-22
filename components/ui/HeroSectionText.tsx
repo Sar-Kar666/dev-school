@@ -35,9 +35,9 @@ export default function HeroSectionText(){
         </div>
             <div className="w-full flex justify-center items-center">
                 <div className="px-2">
-                     <Button children="Explore Courses" color={"bg-blue-800 text-white h-10 "}></Button></div>
+                     <Button children="Explore Courses" variant={"secondary"} color={"bg-blue-800 text-white h-10 "}></Button></div>
                 <div className="px-2">
-                    <Button children="Learn more" color={"bg-gray-200  h-10 w-30"}></Button>
+                    <Button children="Learn more"  variant={"secondary"} color={"bg-gray-200  h-10 w-30"}></Button>
                 </div>
             </div>
 
@@ -47,7 +47,7 @@ export default function HeroSectionText(){
             </div>
             
             <div className="py-20">
-                <h3 className="mb-6 text-center text-lg font-semibold text-slate-700">
+                <h3 className="mb-10 text-center text-4xl font-semibold text-slate-700">
                 Technologies you’ll master
                 </h3>
 
