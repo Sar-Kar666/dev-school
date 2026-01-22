@@ -1,7 +1,8 @@
 
 import { Button } from "./Button";
-import { EncryptedText } from "./EncryptedText";
+import { TechCarousel } from "./TechCarousel";
 import { TerminalCard } from "./TerminalCard";
+import { Typewriter } from "./TypeWritter";
 
 
 export default function HeroSectionText(){
@@ -24,8 +25,9 @@ export default function HeroSectionText(){
         <div className="flex justify-center">
             <div className="py-6">
 
-                <div className="text-center sm: text-4xl sm:text-6xl md:text-7xl font-semibold  tracking-tighter text-blue-900">
-                    <EncryptedText text="Master Full Stack Development" revealDelayMs={40} flipDelayMs={40}/>
+                <div className="text-center sm: text-4xl sm:text-6xl md:text-7xl font-semibold  tracking-tighter text-blue-900"><Typewriter text="Master Full Stack Development" seconds={1} />
+
+                    {/* <EncryptedText text="Master Full Stack Development" revealDelayMs={40} flipDelayMs={40}/> */}
                 </div>
                 <div className="tracking-wide text-center sm: text-muted-foreground py-4"><p>Master Full Stack Development through hands-on open source projects. Join a community of developers transforming their careers with practical, real-world programming skills.</p>
                 </div>
@@ -39,9 +41,18 @@ export default function HeroSectionText(){
                 </div>
             </div>
 
-            <div className="py-15">
-              <TerminalCard/>
+
+            <div className="py-15 min-h-120 ">
+                <TerminalCard/>
             </div>
             
+            <div className="py-20">
+                <h3 className="mb-6 text-center text-lg font-semibold text-slate-700">
+                Technologies you’ll master
+                </h3>
+
+                <TechCarousel/>
+            </div>
     </div>
 }
+

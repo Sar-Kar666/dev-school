@@ -145,3 +145,12 @@
     var(--animation-direction, forwards);
 }
  
+.shiki {
+  background-color: #1e1e1e !important; /* VS Code background */
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 500px;
+}

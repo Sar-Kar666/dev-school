@@ -2,7 +2,7 @@ import { HeroSection } from "@/components/ui/HeroSection";
 
 
 export default function Home() {
-  return<div>
+  return<div className="">
     <HeroSection/>
   </div>
 }
