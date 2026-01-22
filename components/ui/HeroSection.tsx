@@ -1,9 +1,8 @@
 import HeroSectionText from "./HeroSectionText";
+import { InfiniteMovingCards } from "./InfiniteMovingCards";
 
 export function HeroSection(){
-    return<div className=" max-w-fit py-20 ">
+    return<div className="py-20 ">
             <HeroSectionText/>
-     
-        
     </div>
 }

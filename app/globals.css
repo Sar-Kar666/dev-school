@@ -132,3 +132,16 @@
     @apply bg-background text-foreground;
   }
 }
+@keyframes scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 40s)
+    linear
+    infinite
+    var(--animation-direction, forwards);
+}
+ 
