@@ -47,7 +47,7 @@ export default function HeroSectionText(){
             </div>
             
             <div className="py-20">
-                <h3 className="mb-10 text-center text-4xl font-semibold text-slate-700">
+                <h3 className="mb-10 text-center text-4xl font-semibold font-mono text-slate-700">
                 Technologies you’ll master
                 </h3>
 

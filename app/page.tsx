@@ -1,8 +1,8 @@
-import { HeroSection } from "@/components/ui/HeroSection";
+import { Dashboard } from "@/components/Dashboard";
 
 
 export default function Home() {
   return<div className="">
-    <HeroSection/>
+    <Dashboard/>
   </div>
 }

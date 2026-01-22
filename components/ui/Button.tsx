@@ -5,8 +5,8 @@ interface ButtonProps {
 }
 
 const variants = {
-  primary: "border cursor-pointer px-2 py-1 rounded-md flex items-center",
-  secondary: "border cursor-pointer px-4 py-2 rounded-md flex items-center",
+  primary: "border  cursor-pointer px-2 py-1 rounded-md flex items-center flex justify-center",
+  secondary: "border cursor-pointer px-4 py-2 rounded-md flex items-center flex justify-center",
 } as const;
 
 export function Button({
