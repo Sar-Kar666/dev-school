@@ -10,7 +10,7 @@ export function Dashboard(){
             <RenderCard/>
             <div className="pt-20 pb-5">
                 <h1 className=" mt-35 text-center text-4xl font-semibold font-mono text-slate-700">FAQ</h1>
-                <p className="text-center font-mono text-slate-700">Get your questions answered</p>
+                <p className="text-center font-mono text-slate-700 ">Get your questions answered</p>
                 </div>
             <Faq/>
             
