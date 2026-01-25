@@ -1,8 +1,8 @@
-import { Dashboard } from "@/components/Dashboard";
+import { Dashboard } from "./components/Dashboard";
 
 
 export default function Home() {
-  return<div className="">
+  return<div className=" scroll-smooth">
     <Dashboard/>
   </div>
 }

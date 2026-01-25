@@ -3,7 +3,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "./accordion"
 
 export function Faq(){
     return<div className="lg:px-30  text-slate-700">

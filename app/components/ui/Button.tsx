@@ -1,5 +1,5 @@
 interface ButtonProps {
-  children: React.ReactNode;
+  children: React.ReactNode | string ;
   color: string;
   variant?: "primary" | "secondary";
 }

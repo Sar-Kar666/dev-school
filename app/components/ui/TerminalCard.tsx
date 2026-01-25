@@ -97,7 +97,8 @@ export const TerminalCard = ({ className }: { className?: string }) => {
       </div>
 
       {/* Terminal */}
-      <pre className="p-6 text-sm font-mono leading-relaxed">
+     <pre className="p-6 text-sm font-mono leading-relaxed whitespace-pre-wrap break-words overflow-x-hidden">
+
         {displayedLines.map((line, i) => (
           <div key={i}>{line}</div>
         ))}
