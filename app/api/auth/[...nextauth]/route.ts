@@ -36,9 +36,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: {
-    strategy: "jwt", // ✅ now correctly typed
-  },
+ 
   secret: process.env.NEXTAUTH_SECRET,
 };
 

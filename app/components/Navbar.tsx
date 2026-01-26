@@ -1,6 +1,6 @@
 
 import Link from "next/link";
-import { Profile } from "./ui/Profile";
+import { Profile } from "./ProfileWrapper";
 
 export function Navbar() {
   return (
@@ -26,7 +26,7 @@ export function Navbar() {
         </div>
 
         {/* RIGHT */}
-        <Profile />
+        <Profile/>
       </div>
     </nav>
   );

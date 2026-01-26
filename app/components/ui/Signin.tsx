@@ -1,54 +1,52 @@
 "use client";
 
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function SigninPage({ onClose }: { onClose: () => void }) {
-
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-   const [email,setEmail]=useState<String | null>("");
-   const [password,setPassword]=useState<String | null>("");
-    
- 
-    useEffect(() => {
+  const [email, setEmail] = useState(""); // ✅ Changed from String | null to string
+  const [password, setPassword] = useState(""); // ✅ Changed from String | null to string
+
+
+   const router = useRouter();
+   
+  useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
     };
-        }, []);
+  }, []);
+  async function handleSignin() {
+    setLoading(true);
+    setError("");
 
-        
-        async function handleSignin() {
-        setLoading(true);
-        setError("");
+    if (!email || !password) {
+      setError("Email and password are required");
+      setLoading(false);
+      return;
+    }
 
-        if (!email || !password) {
-            setError("Email and password are required");
-            setLoading(false);
-            return;
-        }
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
-        const res = await signIn("credentials", {
-            email,
-            password,
-            redirect: false,
-        });
+    if (res?.error) {
+      setError("Invalid email or password");
+      setLoading(false);
+      return;
+    }
 
-        if (res?.error) {
-            setError("Invalid email or password");
-            setLoading(false);
-            return;
-        }
-
-        // ✅ Success
-        setLoading(false);
-        onClose(); // close modal
-        }
-
+    setLoading(false);
+    onClose();
+    router.refresh(); // ✅ Refreshes server components only
+  }
 
 
   return (
@@ -63,14 +61,14 @@ export function SigninPage({ onClose }: { onClose: () => void }) {
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-black dark:hover:text-white"
+          className="absolute top-4 right-4 text-gray-500 hover:text-black dark:hover:text-white z-10"
         >
           ✕
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Banner */}
-          <div className="relative hidden md:block">
+          <div className="relative hidden md:block h-full min-h-[400px]">
             <Image
               src="/banner.png"
               alt="Banner"
@@ -83,27 +81,30 @@ export function SigninPage({ onClose }: { onClose: () => void }) {
           <div className="p-8 space-y-6">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-               Welcome Back
+                Welcome Back
               </h2>
               <p className="text-sm text-gray-500">
                 Join us and start learning
               </p>
             </div>
 
-            {/* Username */}
+            {/* Email */}
             <input
-              type="text"
+              type="email" // ✅ Changed to type="email" for better validation
               placeholder="Email"
+              value={email} // ✅ Added: Controlled input
               className="border h-11 w-full px-4 rounded-lg bg-transparent focus:ring-2 focus:ring-blue-500"
-                onChange={(e)=>{ setEmail(e.target.value)}}/>
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
             {/* Password */}
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
+                value={password} // ✅ Added: Controlled input
                 className="border h-11 w-full px-4 rounded-lg bg-transparent focus:ring-2 focus:ring-blue-500"
-                  onChange={(e)=>{ setPassword(e.target.value)}}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
@@ -119,24 +120,15 @@ export function SigninPage({ onClose }: { onClose: () => void }) {
 
             {/* Submit */}
             <button
-                    onClick={() => {
-                        handleSignin();
-                        }
-                    }
-                    disabled={loading}
-                    className="w-full h-11 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-60"
-             >
-
-              {loading
-                ? "Please wait..."
-                : "Sign in"}
+              onClick={handleSignin}
+              disabled={loading}
+              className="w-full h-11 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-60"
+            >
+              {loading ? "Please wait..." : "Sign in"}
             </button>
-
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-
