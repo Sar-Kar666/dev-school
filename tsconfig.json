@@ -34,8 +34,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
-  ],
+    "**/*.mts",
+    "types/**/*.ts"
+, "app/admin/dashboard"  ],
   "exclude": [
     "node_modules"
   ]

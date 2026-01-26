@@ -68,7 +68,7 @@ export function SigninPage({ onClose }: { onClose: () => void }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Banner */}
-          <div className="relative hidden md:block h-full min-h-[400px]">
+          <div className="relative hidden md:block h-full min-h-100">
             <Image
               src="/banner.png"
               alt="Banner"
