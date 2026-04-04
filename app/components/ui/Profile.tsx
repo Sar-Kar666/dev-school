@@ -1,141 +1,159 @@
-// "use client";
+"use client";
 
-// import { Menu } from "../icons/Menu";
-// import { useEffect, useRef, useState } from "react";
-// import { SigninPage } from "./Signin";
-// import { Signup } from "./Signup";
-// import { useSession, signOut } from "next-auth/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { SigninPage } from "./Signin";
+import { SignupPage } from "./Signup";
 
-// export function Profile() {
-//   const { data: session, status } = useSession();
-//   const [open, setOpen] = useState(false);
-//   const [signinOpen, setSigninOpen] = useState(false);
-// const [signupOpen, setSignupOpen] = useState<boolean>(false);
-//   const dropDownRef = useRef<HTMLDivElement | null>(null);
+type UserType = {
+  username: string;
+  email: string;
+};
 
-//   // Close dropdown on outside click
-//   useEffect(() => {
-//     function handleClickOutside(e: MouseEvent) {
-//       if (
-//         dropDownRef.current &&
-//         !dropDownRef.current.contains(e.target as Node)
-//       ) {
-//         setOpen(false);
-//       }
-//     }
 
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () =>
-//       document.removeEventListener("mousedown", handleClickOutside);
-//   }, []);
 
-//   // Lock scroll when any modal is open
+export function Profile() {
+  
+const [signupModal,setSignupModal] = useState(false);
+const [signinModal,setSigninModal]= useState(false);
+const [user,setUser]= useState<UserType | null>(null);
+const [dropdown,setDropdown]=useState(false);
+  const fetchUser=async ()=>{
+    const token = localStorage.getItem("token");
+    if(!token) return;
 
-//   if (status === "loading") return null;
+    try{
+      const response= await axios.get(`${process.env.SERVER_URL}user`,{
+        headers:{token:token}
+      });
+      if(response.data.user){
+        setUser(response.data.user);
+      }
+    }catch(e){
+      console.error("User fetch failed", e);
+      localStorage.removeItem("token");
+      setUser(null);
+    }
+  }
+  useEffect(()=> {
+    fetchUser();
+  },[])
 
-//   function Dropdown() {
-//     return (
-//       <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg text-sm">
-//          <div className="px-3 py-2 cursor-pointer  border-b  hover:bg-slate-100">
-//                   Courses
-//                 </div>
-// {session ? (
-//   <>
-//         <div
-//           onClick={() => signOut()}
-//             className="px-3 py-2 cursor-pointer text-red-600 hover:bg-red-50"
-//           >
-//             Logout
-//           </div>
-//           <div className="px-3 py-2 cursor-pointer border-b  hover:bg-slate-100">
-//                   Profile
-//                 </div>
-               
-//           </>
-// ) : (
-//   <>
-//     <div
-//       onClick={() => {
-//         setSigninOpen(true);
-//         setOpen(false);
-//       }}
-//       className="px-3 py-2 cursor-pointer border-b  hover:bg-blue-50"
-//     >
-//       Signin
-//     </div>
 
-//     <div
-//       onClick={() => {
-//         setSignupOpen(true);
-//         setOpen(false);
-//       }}
-//       className="px-3 py-2 cursor-pointer   hover:bg-blue-50"
-//     >
-//       Signup
-//     </div>
-//   </>
-// )}
 
-//       </div>
-//     );
-//   }
 
-//   return (
-//     <div className="flex items-center gap-3">
-//       {session ? (
-//         // LOGGED IN
-//         <div className="relative" ref={dropDownRef}>
-//           <button
-//             onClick={() => setOpen(!open)}
-//             className="p-2 rounded-md  transition"
-//           >
-//           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur border border-gray-300 text-gray-900 font-semibold text-lg shadow
-//                         transition-all duration-200
-//                         hover:border-blue-500 hover:bg-blue-50 hover:shadow-md cursor-pointer">
-//           {session.user?.name?.[0]?.toUpperCase() ?? "U"}
-//         </div>
+  return <div>
+ {user ? (
+  <div className="relative inline-block text-left">
+    {/* Trigger Button */}
+    <div 
+      className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-gray-100 cursor-pointer transition-colors border border-transparent hover:border-gray-200"
+      onClick={() => setDropdown(!dropdown)}
+    >
+      <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-medium uppercase text-sm">
+        {user.username.charAt(0)}
+      </div>
+      <span className="text-sm font-medium text-gray-700">{user.username}</span>
+      <svg className={`w-4 h-4 text-gray-500 transition-transform ${dropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
 
-//           </button>
-//           {open && <Dropdown />}
-//         </div>
-//       ) : (
-//         // LOGGED OUT
-//         <>
-//           {/* Desktop buttons */}
-//           <button
-//             onClick={() => setSigninOpen(true)}
-//             className="hidden sm:inline-flex px-4 py-2 text-sm font-semibold border border-blue-700 text-blue-700 rounded-md hover:bg-blue-700 hover:text-white transition"
-//           >
-//             Signin
-//           </button>
+    {/* Dropdown Menu */}
+    {dropdown && <Dropdown setDropdown={setDropdown} setUser={setUser} />}
+  </div>
+) : (
+  <div className="flex items-center gap-4">
+    <button 
+      onClick={() => setSigninModal(true)}
+      className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+    >
+      Sign in
+    </button>
+    <button 
+      onClick={() => setSignupModal(true)}
+      className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-shadow shadow-sm"
+    >
+      Get Started
+    </button>
+  </div>
+)}
+  {/* Logic for the Modal */}
+      {signinModal && (
+        <SigninPage 
+          onClose={() => setSigninModal(false)} 
+          onSignin={() => {
+            // This runs after a successful login in the child component
+            fetchUser(); 
+            setSigninModal(false);
+          }} 
+          openSignup={()=>{
+            setSigninModal(false);
+            setSignupModal(true)
+          }}
+        />
+      )}
 
-//           <button
-//             onClick={() => setSignupOpen(true)}
-//             className="hidden sm:inline-flex px-4 py-2 text-sm font-semibold text-white rounded-md bg-blue-700 hover:bg-blue-500 transition"
-//           >
-//             Get Started
-//           </button>
+             {signupModal && (
+        <SignupPage 
+          onClose={() => setSignupModal(false)} 
+          onSignup={() => {
+            // This runs after a successful login in the child component
+            setSigninModal(true);
+            setSignupModal(false);
+          }} 
+           openSignin={() => {
+            setSignupModal(false);
+            setSigninModal(true)
+            
+          }} 
+        />
+      )}
+        
+        
+  </div>
+}
 
-//           {/* Mobile menu */}
-//           <div className="relative sm:hidden" ref={dropDownRef}>
-//             <button
-//               onClick={() => setOpen(!open)}
-//               className="p-2 rounded-md hover:bg-slate-100 transition"
-//             >
-//               <Menu />
-//             </button>
-//             {open && <Dropdown />}
-//           </div>
+function Dropdown({ setDropdown, setUser }: { setDropdown: (val: boolean) => void, setUser: (val: any) => void }) {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+     localStorage.removeItem("role");
+    setUser(null);
+    setDropdown(false);
+    window.location.reload();
+  };
 
-//           {/* Modals */}
-//           {signinOpen && (
-//             <SigninPage onClose={() => setSigninOpen(false)} />
-//           )}
-//           {signupOpen && (
-//             <Signup onClose={() => setSignupOpen(false)} />
-//           )}
-//         </>
-//       )}
-//     </div>
-//   );
-// }
+  return (
+    <>
+      {/* Invisible backdrop to close dropdown when clicking outside */}
+      <div className="fixed inset-0 z-10" onClick={() => setDropdown(false)}></div>
+      
+      <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-20 overflow-hidden">
+        <div className="py-1">
+          <DropdownItem label="My Profile"  />
+          <DropdownItem label="My Courses"  />
+          <DropdownItem label="All Courses"/>
+          
+          <hr className="my-1 border-gray-100" />
+          
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+          >
+            <span className="mr-3"></span>
+            Logout
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function DropdownItem({ label }: { label: string }) {
+  return (
+    <button className="flex w-full items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+      <span className="mr-3 text-lg"></span>
+      {label}
+    </button>
+  );
+}

@@ -1,9 +1,20 @@
+
+import axios from "axios";
 import { Faq } from "./ui/Faq";
 import HeroSectionText from "./ui/HeroSectionText";
 import { RenderCard } from "./ui/RenderCard";
 
 
+
 export function Dashboard(){
+
+    async function hitServer(){
+        const res= await axios.post(`${process.env.SERVER_URL}`);
+        console.log(res)
+    }
+    
+    hitServer();
+
     return<div className="py-15 ">
             <HeroSectionText/>
             <div className="py-20"><h1 className="mb-10 text-center text-4xl font-semibold font-mono text-slate-700">Featured Course</h1></div>

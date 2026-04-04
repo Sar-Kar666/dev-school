@@ -1,8 +1,25 @@
-
+"use client";
 import Link from "next/link";
-import { Profile } from "./ProfileWrapper";
+import { Profile } from "./ui/Profile";
+
+
+import { useEffect, useState } from "react";
 
 export function Navbar() {
+  const [mounted, setMounted] = useState(false);
+      
+  
+  
+  useEffect(() => {
+    
+   const role = localStorage.getItem("role");
+    if(!role) setMounted(false);
+   if(role==="ADMIN"){
+    setMounted(true);
+   }
+  }, []);
+  
+  
   return (
     <nav className="w-full border-b shadow-sm">
       <div className="max-w-7xl min-w-12.5  mx-auto flex justify-between items-center px-6 py-1">
@@ -22,11 +39,16 @@ export function Navbar() {
             <button className="text-lg px-3 py-1 rounded-md hover:scale-105 hover:text-blue-800 hover:bg-slate-50 transition">
             <Link href={"/courses"}>Courses</Link>
             </button>
-          </div>
+            {mounted &&  <button className="text-lg px-3 py-1 rounded-md hover:scale-105 hover:text-blue-800 hover:bg-slate-50 transition">
+            <Link href={"/create"}>Publish</Link>
+            </button> }
+          </div>  
         </div>
 
         {/* RIGHT */}
-        <Profile/>
+        <div className="flex items-center gap-2">
+          <Profile />
+        </div>
       </div>
     </nav>
   );

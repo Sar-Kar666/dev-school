@@ -1,132 +1,136 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useState, FormEvent } from "react";
+import axios from "axios";
 
-export function SigninPage({ onClose }: { onClose: () => void }) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+interface SigninProps {
+  onClose: () => void;
+  onSignin: () => void;
+  openSignup:()=>void;
+}
+
+export function SigninPage({ onClose, onSignin ,openSignup}: SigninProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [email, setEmail] = useState(""); // ✅ Changed from String | null to string
-  const [password, setPassword] = useState(""); // ✅ Changed from String | null to string
+  const [isLoading, setIsLoading] = useState(false);
 
-
-   const router = useRouter();
-   
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
-  async function handleSignin() {
-    setLoading(true);
-    setError("");
-
+  const handleLogin = async (e?: FormEvent) => {
+    // Prevent page reload if called from form submit
+    e?.preventDefault();
+    
+    // Edge Case: Basic Validation
     if (!email || !password) {
-      setError("Email and password are required");
-      setLoading(false);
+      setError("Please fill in all fields.");
       return;
     }
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    setError("");
+    setIsLoading(true);
 
-    if (res?.error) {
-      setError("Invalid email or password");
-      setLoading(false);
-      return;
+    try {
+      const response = await axios.post(`${process.env.SERVER_URL}user/signin`, {
+        email,
+        password,
+      });
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", response.data.role);
+        window.location.reload();
+        onSignin();
+        onClose();
+      }
+    } catch (err: any) {
+      // Edge Case: Handle network errors vs API errors
+      const message = err.response?.data?.message || "Check your connection and try again.";
+      setError(message);
+    } finally {
+      setIsLoading(false);
     }
-
-    setLoading(false);
-    onClose();
-    router.refresh(); // ✅ Refreshes server components only
-  }
-
+  };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
-      onClick={onClose}
-    >
-      <div
-        className="relative bg-white dark:bg-zinc-900 w-full max-w-4xl rounded-2xl shadow-xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-black dark:hover:text-white z-10"
-        >
-          ✕
-        </button>
-
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* Banner */}
-          <div className="relative hidden md:block h-full min-h-100">
-            <Image
-              src="/banner.png"
-              alt="Banner"
-              fill
-              className="object-cover"
-            />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md px-4">
+      <div className="w-full max-w-md rounded-xl bg-white shadow-2xl overflow-hidden border border-slate-200">
+        
+        {/* Header */}
+        <div className="flex justify-between items-center px-8 pt-8 pb-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">Welcome back</h2>
+            <p className="text-sm text-slate-500 mt-1">Enter your credentials to access your account</p>
           </div>
+          <button 
+            onClick={onClose} 
+            className="p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600"
+            aria-label="Close modal"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
-          {/* Form */}
-          <div className="p-8 space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Welcome Back
-              </h2>
-              <p className="text-sm text-gray-500">
-                Join us and start learning
-              </p>
-            </div>
-
-            {/* Email */}
-            <input
-              type="email" // ✅ Changed to type="email" for better validation
-              placeholder="Email"
-              value={email} // ✅ Added: Controlled input
-              className="border h-11 w-full px-4 rounded-lg bg-transparent focus:ring-2 focus:ring-blue-500"
+        {/* Form Body */}
+        <form onSubmit={handleLogin} className="p-8 space-y-5">
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-slate-700">Email address</label>
+            <input 
+              type="email" 
+              disabled={isLoading}
+              className="w-full border border-slate-300 rounded-lg p-2.5 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 disabled:bg-slate-50 disabled:text-slate-500"
+              placeholder="name@example.com"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-
-            {/* Password */}
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password} // ✅ Added: Controlled input
-                className="border h-11 w-full px-4 rounded-lg bg-transparent focus:ring-2 focus:ring-blue-500"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-sm text-gray-500"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-
-            {/* Error */}
-            {error && <p className="text-sm text-red-500">{error}</p>}
-
-            {/* Submit */}
-            <button
-              onClick={handleSignin}
-              disabled={loading}
-              className="w-full h-11 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-60"
-            >
-              {loading ? "Please wait..." : "Sign in"}
-            </button>
           </div>
+
+          <div className="space-y-1.5">
+            {/* <div className="flex justify-between">
+              <label className="text-sm font-semibold text-slate-700">Password</label>
+              <button type="button" className="text-xs text-blue-600 hover:underline">Forgot password?</button>
+            </div> */}
+            <input 
+              type="password" 
+              disabled={isLoading}
+              className="w-full border border-slate-300 rounded-lg p-2.5 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 disabled:bg-slate-50 disabled:text-slate-500"
+              placeholder="Min. 6 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          {error && (
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 border border-red-100">
+              <svg className="w-4 h-4 text-red-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <p className="text-xs font-medium text-red-700">{error}</p>
+            </div>
+          )}
+
+          <button 
+            type="submit"
+            disabled={isLoading}
+            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : (
+              "Sign In"
+            )}
+          </button>
+        </form>
+
+        {/* Footer */}
+        <div className="bg-slate-50 p-6 border-t border-slate-100 text-center">
+          <p className="text-sm text-slate-600">
+            Don't have an account? 
+            <button className="ml-1 font-bold text-blue-600 hover:text-blue-700 transition-colors" onClick={()=>{openSignup()}}>Create account</button>
+          </p>
         </div>
       </div>
     </div>
