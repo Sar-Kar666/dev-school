@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { SigninPage } from "./Signin";
 import { SignupPage } from "./Signup";
+import Cookies from "js-cookie";
 
 type UserType = {
   username: string;
@@ -19,8 +20,8 @@ const [signinModal,setSigninModal]= useState(false);
 const [user,setUser]= useState<UserType | null>(null);
 const [dropdown,setDropdown]=useState(false);
   const fetchUser=async ()=>{
-    const token = localStorage.getItem("token");
-    if(!token) return;
+  const token = Cookies.get("token"); 
+    if (!token) return;
 
     try{
       const response= await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}user`,{
@@ -31,7 +32,8 @@ const [dropdown,setDropdown]=useState(false);
       }
     }catch(e){
       console.error("User fetch failed", e);
-      localStorage.removeItem("token");
+      Cookies.remove("token");
+      Cookies.remove("role");
       setUser(null);
     }
   }
@@ -116,8 +118,8 @@ const [dropdown,setDropdown]=useState(false);
 
 function Dropdown({ setDropdown, setUser }: { setDropdown: (val: boolean) => void, setUser: (val: any) => void }) {
   const handleLogout = () => {
-    localStorage.removeItem("token");
-     localStorage.removeItem("role");
+    Cookies.remove("token");
+    Cookies.remove("role");
     setUser(null);
     setDropdown(false);
     window.location.reload();

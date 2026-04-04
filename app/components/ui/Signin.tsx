@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 interface SigninProps {
   onClose: () => void;
@@ -34,9 +35,11 @@ export function SigninPage({ onClose, onSignin ,openSignup}: SigninProps) {
         password,
       });
 
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", response.data.role);
+      if (response.data.token ) {
+        const  token = response.data.token;
+        const role = response.data.role;
+        Cookies.set("token", token, { expires: 7 });
+        Cookies.set("role", role, { expires: 7 });
         window.location.reload();
         onSignin();
         onClose();

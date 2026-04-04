@@ -1,52 +1,38 @@
-"use client";
 import Link from "next/link";
+import { cookies } from "next/headers"; // Next.js built-in server-side cookie helper
 import { Profile } from "./ui/Profile";
 
+export async function Navbar() {
+  // 1. Get cookies directly on the server
+  const cookieStore = await cookies();
+  const role = cookieStore.get("role")?.value;
 
-import { useEffect, useState } from "react";
-
-export function Navbar() {
-  const [mounted, setMounted] = useState(false);
-      
-  
-  
-  useEffect(() => {
-    
-   const role = localStorage.getItem("role");
-    if(!role) setMounted(false);
-   if(role==="ADMIN"){
-    setMounted(true);
-   }
-  }, []);
-  
-  
   return (
-    <nav className="w-full border-b shadow-sm">
-      <div className="max-w-7xl min-w-12.5  mx-auto flex justify-between items-center px-6 py-1">
-
-        {/* LEFT */}
+    <nav className="w-full border-b shadow-sm bg-white">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-1">
+        
         <div className="flex gap-10">
-         <Link href={"/"} > <h1 className="text-xl font-bold py-1 cursor-pointer px-3 rounded-md hover:scale-105 transition-transform">
-           <span className="text-blue-500">Dev</span> School
-          </h1></Link>
+          <Link href="/">
+            <h1 className="text-xl font-bold py-1 px-3">
+              <span className="text-blue-500">Dev</span> School
+            </h1>
+          </Link>
 
           <div className="hidden sm:flex gap-3">
-            <button className="text-lg px-3 py-1 rounded-md hover:scale-105 hover:text-blue-800 hover:bg-slate-50 transition">
-              <Link href={"/"}>Home</Link>
-              
-            </button>
+            <Link href="/" className="text-lg px-3 py-1">Home</Link>
+            <Link href="/courses" className="text-lg px-3 py-1">Courses</Link>
 
-            <button className="text-lg px-3 py-1 rounded-md hover:scale-105 hover:text-blue-800 hover:bg-slate-50 transition">
-            <Link href={"/courses"}>Courses</Link>
-            </button>
-            {mounted &&  <button className="text-lg px-3 py-1 rounded-md hover:scale-105 hover:text-blue-800 hover:bg-slate-50 transition">
-            <Link href={"/create"}>Publish</Link>
-            </button> }
-          </div>  
+            {/* 2. This condition is now evaluated on the SERVER */}
+            {role === "ADMIN" && (
+              <Link href="/create" className="text-lg px-3 py-1">
+                Publish
+              </Link>
+            )}
+          </div>
         </div>
 
-        {/* RIGHT */}
         <div className="flex items-center gap-2">
+          {/* Profile can stay a Client Component for the dropdown logic */}
           <Profile />
         </div>
       </div>

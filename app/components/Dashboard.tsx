@@ -1,5 +1,4 @@
 
-import axios from "axios";
 import { Faq } from "./ui/Faq";
 import HeroSectionText from "./ui/HeroSectionText";
 import { RenderCard } from "./ui/RenderCard";
@@ -8,12 +7,6 @@ import { RenderCard } from "./ui/RenderCard";
 
 export function Dashboard(){
 
-    async function hitServer(){
-        const res= await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}`);
-        console.log(res)
-    }
-    
-    hitServer();
 
     return<div className="py-15 ">
             <HeroSectionText/>

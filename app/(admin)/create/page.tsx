@@ -19,14 +19,10 @@ export default function CreateCourse() {
 
   // Fix for Next.js SSR: Only access localStorage after component mounts
 useEffect(() => {
-  const verifyAdmin = async () => {
-    const token = localStorage.getItem("token");
+  
+    const role = localStorage.getItem("role");
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}user/admin`, {
-        headers: { token }
-      });
-
-      if (res.data.role === "ADMIN") {
+      if (role=== "ADMIN") {
         setMounted(true);
       } else {
         router.push("/");
@@ -34,8 +30,7 @@ useEffect(() => {
     } catch (err) {
       router.push("/");
     }
-  };
-  verifyAdmin();
+  
 }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,7 +113,7 @@ useEffect(() => {
                 className="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
                 placeholder="49.99"
                 value={price || ""}
-                onChange={(e) => setPrice(e.target.valueAsNumber)}
+                onChange={(e) => setPrice(Number(e.target.value) || 0)}
               />
             </div>
 
