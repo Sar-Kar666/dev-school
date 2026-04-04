@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-
+import { useRouter } from "next/navigation";
 interface SigninProps {
   onClose: () => void;
   onSignin: () => void;
@@ -16,6 +16,7 @@ export function SigninPage({ onClose, onSignin ,openSignup}: SigninProps) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
   const handleLogin = async (e?: FormEvent) => {
     // Prevent page reload if called from form submit
     e?.preventDefault();
@@ -40,7 +41,7 @@ export function SigninPage({ onClose, onSignin ,openSignup}: SigninProps) {
         const role = response.data.role;
         Cookies.set("token", token, { expires: 7 });
         Cookies.set("role", role, { expires: 7 });
-        window.location.reload();
+        router.refresh()
         onSignin();
         onClose();
       }
