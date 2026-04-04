@@ -9,7 +9,7 @@ import { RenderCard } from "./ui/RenderCard";
 export function Dashboard(){
 
     async function hitServer(){
-        const res= await axios.post(`${process.env.SERVER_URL}`);
+        const res= await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}`);
         console.log(res)
     }
     

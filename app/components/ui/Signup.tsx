@@ -35,7 +35,7 @@ export function SignupPage({ onClose, onSignup,openSignin }: SignupProps) {
     setError(""); 
 
     try {
-      const response = await axios.post(`${process.env.SERVER_URL}user/signup`, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}user/signup`, {
         username,
         email,
         password,

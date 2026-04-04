@@ -23,7 +23,7 @@ const [dropdown,setDropdown]=useState(false);
     if(!token) return;
 
     try{
-      const response= await axios.get(`${process.env.SERVER_URL}user`,{
+      const response= await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}user`,{
         headers:{token:token}
       });
       if(response.data.user){

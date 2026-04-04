@@ -22,7 +22,7 @@ useEffect(() => {
   const verifyAdmin = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get(`${process.env.SERVER_URL}user/admin`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}user/admin`, {
         headers: { token }
       });
 
@@ -57,7 +57,7 @@ useEffect(() => {
 
     try {
       const response = await axios.post(
-        `${process.env.SERVER_URL}courses/create`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}courses/create`,
         { title, description, price },
         { headers: { token: token } }
       );

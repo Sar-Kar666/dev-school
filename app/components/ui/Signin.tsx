@@ -29,7 +29,7 @@ export function SigninPage({ onClose, onSignin ,openSignup}: SigninProps) {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${process.env.SERVER_URL}user/signin`, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}user/signin`, {
         email,
         password,
       });
