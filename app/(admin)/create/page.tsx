@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function CreateCourse() {
   const router = useRouter();
   
   // Form State
   const [title, setTitle] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
   
@@ -17,26 +19,24 @@ export default function CreateCourse() {
   const [message, setMessage] = useState({ type: "", text: "" });
   const [mounted, setMounted] = useState(false);
 
-  // Fix for Next.js SSR: Only access localStorage after component mounts
-useEffect(() => {
-  
-    const role = localStorage.getItem("role");
-    try {
-      if (role=== "ADMIN") {
-        setMounted(true);
-      } else {
-        router.push("/");
-      }
-    } catch (err) {
+  // AUTH CHECK: Run this only on the client after mount
+  useEffect(() => {
+    const role = Cookies.get("role");
+    const token = Cookies.get("token");
+
+    if (role !== "ADMIN" || !token) {
       router.push("/");
+    } else {
+      setMounted(true);
     }
-  
-}, []);
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
+    
+    // Check if token exists, not if it equals "ADMIN"
     if (!token) {
       setMessage({ type: "error", text: "Authentication token missing. Please sign in." });
       return;
@@ -53,16 +53,16 @@ useEffect(() => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}courses/create`,
-        { title, description, price },
-        { headers: { token: token } }
+        { title, description, price, imageUrl },
+        { headers: { token: token } } // Ensure your backend expects 'token' header
       );
 
       if (response.status === 201 || response.status === 200) {
         setMessage({ type: "success", text: "Course published successfully!" });
-        // Optional: Clear form
         setTitle("");
         setDescription("");
         setPrice(0);
+        setImageUrl("");
       }
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || "Failed to create course.";
@@ -72,7 +72,7 @@ useEffect(() => {
     }
   };
 
-  // Prevent hydration mismatch
+  // Prevent hydration mismatch: Render nothing until we confirm the user is an ADMIN
   if (!mounted) return null;
 
   return (
@@ -88,7 +88,7 @@ useEffect(() => {
               <label className="block text-sm font-semibold text-slate-700 mb-1">Course Title</label>
               <input 
                 type="text"
-                className="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
+                className="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 placeholder="e.g. Advanced Web Development"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -96,10 +96,21 @@ useEffect(() => {
             </div>
 
             <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">Image URL</label>
+              <input 
+                type="text"
+                className="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                placeholder="https://example.com/image.jpg"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+              />
+            </div>
+
+            <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">Description</label>
               <textarea 
                 rows={4}
-                className="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
+                className="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 placeholder="What will students learn?"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -107,11 +118,11 @@ useEffect(() => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Price (USD)</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">Price (INR)</label>
               <input 
                 type="number"
-                className="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
-                placeholder="49.99"
+                className="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                placeholder="1999"
                 value={price || ""}
                 onChange={(e) => setPrice(Number(e.target.value) || 0)}
               />
@@ -141,9 +152,13 @@ useEffect(() => {
         <div className="hidden md:block">
           <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Preview</h2>
           <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-slate-200 sticky top-8">
-            <div className="h-40 bg-slate-200 animate-pulse flex items-center justify-center text-slate-400">
-              Course Image Placeholder
-            </div>
+            {imageUrl ? (
+                <img src={imageUrl} alt="Preview" className="h-40 w-full object-cover" />
+            ) : (
+                <div className="h-40 bg-slate-200 flex items-center justify-center text-slate-400">
+                  No Image Provided
+                </div>
+            )}
             <div className="p-6 space-y-3">
               <h3 className="text-xl font-bold text-slate-900 break-words">
                 {title || "Your Course Title"}
@@ -153,7 +168,7 @@ useEffect(() => {
               </p>
               <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
                 <span className="text-2xl font-black text-indigo-600">
-                  ${price > 0 ? price : "0.00"}
+                  ₹{price > 0 ? price : "0"}
                 </span>
                 <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded font-bold uppercase">
                   Admin Draft

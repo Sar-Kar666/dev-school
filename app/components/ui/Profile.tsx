@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { SigninPage } from "./Signin";
 import { SignupPage } from "./Signup";
 import Cookies from "js-cookie";
+import Link from "next/link";
 
 type UserType = {
   username: string;
@@ -133,8 +134,13 @@ function Dropdown({ setDropdown, setUser }: { setDropdown: (val: boolean) => voi
       <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-20 overflow-hidden">
         <div className="py-1">
           <DropdownItem label="My Profile"  />
-          <DropdownItem label="My Courses"  />
+           <Link href="/profile/my-courses">
+            <DropdownItem label="My Courses" />
+          </Link>
+          <Link href="/courses">
           <DropdownItem label="All Courses"/>
+          </Link>
+          
           
           <hr className="my-1 border-gray-100" />
           

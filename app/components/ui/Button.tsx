@@ -2,6 +2,8 @@ interface ButtonProps {
   children: React.ReactNode | string ;
   color: string;
   variant?: "primary" | "secondary";
+  
+  
 }
 
 const variants = {
