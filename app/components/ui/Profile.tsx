@@ -125,7 +125,7 @@ function Dropdown({ setDropdown, setUser }: { setDropdown: (val: boolean) => voi
     Cookies.remove("token");
     Cookies.remove("role");
     window.location.reload();
-    router.push('/dashboard');
+    router.push('/');
     setUser(null);
     setDropdown(false);
   
