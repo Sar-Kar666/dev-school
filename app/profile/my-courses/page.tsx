@@ -36,7 +36,7 @@ export default async function PurchasedCourse() {
           <Card
             key={item.id} // Don't forget the 'key' prop here!
             id={item.course.id} 
-            img={item.course.imageUrl || "/thumbnail.png"}
+            imageUrl={item.course.imageUrl || "/thumbnail.png"}
             title={item.course.title}
             description={item.course.description}
             createdAt={format(new Date(item.course.createdAt), "MMM dd, yyyy")}

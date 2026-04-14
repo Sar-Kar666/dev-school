@@ -29,9 +29,10 @@ export async function RenderCard({count}:RenderCardProps) {
           {courses.slice(0,count).map((course) => (
             <Card
               id={course.id} // Always provide a unique key
-              img={course.imageUrl || "/thumbnail.png"} // Fallback image if one isn't provided
+              imageUrl={course.imageUrl || "/thumbnail.png"} // Fallback image if one isn't provided
               title={course.title}
               description={course.description}
+              price={course.price}
             createdAt={format(new Date(course.createdAt), "MMM dd, yyyy")}
             />
           ))}
