@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
  * THE FORM COMPONENT
  * This part uses useSearchParams, so it must be inside a Suspense boundary.
  */
-function EditCourseForm() {
+function    EditCourseForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
