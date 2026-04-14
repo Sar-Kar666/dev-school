@@ -11,19 +11,22 @@ interface Course {
   createdAt:string;
 }
 
-export async function RenderCard() {
+interface RenderCardProps{
+  count? :number;
+}
+
+export async function RenderCard({count}:RenderCardProps) {
   try {
     // 1. Fetch the data
     const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}courses`);
     
     // 2. Extract the array (usually response.data.courses or just response.data)
     const courses: Course[] = response.data.courses ||[];
-    console.log(courses)
 
       return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 place-items-center pt-10">
           {/* 3. Map through the items */}
-          {courses.map((course) => (
+          {courses.slice(0,count).map((course) => (
             <Card
               id={course.id} // Always provide a unique key
               img={course.imageUrl || "/thumbnail.png"} // Fallback image if one isn't provided

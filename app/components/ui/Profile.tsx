@@ -133,7 +133,7 @@ function Dropdown({ setDropdown, setUser }: { setDropdown: (val: boolean) => voi
       
       <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-20 overflow-hidden">
         <div className="py-1">
-          <DropdownItem label="My Profile"  />
+          <Link href={"/profile"}><DropdownItem label="My Profile"  /></Link>
            <Link href="/profile/my-courses">
             <DropdownItem label="My Courses" />
           </Link>
