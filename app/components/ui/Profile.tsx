@@ -6,7 +6,7 @@ import { SigninPage } from "./Signin";
 import { SignupPage } from "./Signup";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 type UserType = {
   username: string;
