@@ -21,7 +21,7 @@ const [signupModal,setSignupModal] = useState(false);
 const [signinModal,setSigninModal]= useState(false);
 const [user,setUser]= useState<UserType | null>(null);
 const [dropdown,setDropdown]=useState(false);
-const router = useRouter();
+
   const fetchUser=async ()=>{
   const token = Cookies.get("token"); 
     if (!token) return;
@@ -120,6 +120,7 @@ const router = useRouter();
 }
 
 function Dropdown({ setDropdown, setUser }: { setDropdown: (val: boolean) => void, setUser: (val: any) => void }) {
+  const router = useRouter();
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("role");
