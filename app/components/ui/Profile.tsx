@@ -6,6 +6,7 @@ import { SigninPage } from "./Signin";
 import { SignupPage } from "./Signup";
 import Cookies from "js-cookie";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 type UserType = {
   username: string;
@@ -20,6 +21,7 @@ const [signupModal,setSignupModal] = useState(false);
 const [signinModal,setSigninModal]= useState(false);
 const [user,setUser]= useState<UserType | null>(null);
 const [dropdown,setDropdown]=useState(false);
+const router = useRouter();
   const fetchUser=async ()=>{
   const token = Cookies.get("token"); 
     if (!token) return;
@@ -121,9 +123,11 @@ function Dropdown({ setDropdown, setUser }: { setDropdown: (val: boolean) => voi
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("role");
+    window.location.reload();
+    router.push('/dashboard');
     setUser(null);
     setDropdown(false);
-    window.location.reload();
+  
   };
 
   return (
