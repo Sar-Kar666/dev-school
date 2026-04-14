@@ -1,4 +1,5 @@
 
+import Link from "next/link";
 import { Button } from "./Button";
 import { TechCarousel } from "./TechCarousel";
 import { TerminalCard } from "./TerminalCard";
@@ -35,7 +36,8 @@ export default function HeroSectionText(){
         </div>
             <div className="w-full flex justify-center items-center">
                 <div className="px-2">
-                     <Button children="Explore Courses" variant={"secondary"} color={"bg-blue-800 text-white h-10 "}></Button></div>
+                    <Link href={"/courses"}><Button children="Explore Courses" variant={"secondary"} color={"bg-blue-800 text-white h-10 "}></Button></Link>
+                     </div>
                 <div className="px-2">
                     <Button children="Learn more"  variant={"secondary"} color={"bg-gray-200  h-10 w-30"}></Button>
                 </div>
