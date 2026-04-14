@@ -49,28 +49,67 @@ export function CourseModal({
   /**
    * USER ACTION: Purchase/Enroll
    */
-  async function handleEnroll() {
-    setError(null);
-    try {
-      const token = Cookies.get("token");
-      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.endsWith("/")
-        ? process.env.NEXT_PUBLIC_SERVER_URL
-        : `${process.env.NEXT_PUBLIC_SERVER_URL}/`;
+/**
+ * USER ACTION: Purchase/Enroll with Razorpay
+ */
+async function handleEnroll() {
+  setError(null);
+  try {
+    const token = Cookies.get("token");
+    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
-      const res = await axios.post(
-        `${baseUrl}purchases/buy`,
-        { courseId: id },
-        { headers: { token: token } }
-      );
+    // --- STEP 1: Create Order on Backend ---
+    const orderRes = await axios.post(
+      `${baseUrl}purchases/buy`,
+      { courseId: id },
+      { headers: { token: token } }
+    );
 
-      if (res.status === 200 || res.status === 201) {
-        setConfirmation(true);
-      }
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Something went wrong.";
-      setError(message);
-    }
-  }
+    const { orderId, amount, currency } = orderRes.data;
+
+    // --- STEP 2: Open Razorpay Modal ---
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public key
+      amount: amount,
+      currency: currency,
+      name: "Your Course Platform",
+      description: `Purchase: ${title}`,
+      order_id: orderId,
+      handler: async function (response: any) {
+        // --- STEP 3: Verify Payment on Backend ---
+        try {
+          const verifyRes = await axios.post(
+            `${baseUrl}purchases/verify`,
+            {
+              ...response, // includes razorpay_order_id, razorpay_payment_id, razorpay_signature
+              courseId: id,
+            },
+            { headers: { token: token } }
+          );
+
+          if (verifyRes.status === 200) {
+            setConfirmation(true);
+          }
+        } catch (verifyErr: any) {
+          setError(verifyErr.response?.data?.message || "Verification failed.");
+        }
+      },
+      prefill: {
+        name: "User Name", // You can get this from your user state/context
+        email: "user@example.com",
+      },
+      theme: { color: "#4f46e5" }, // Indigo-600 to match your UI
+    };
+
+    const rzp = (window as any).Razorpay(options);
+    rzp.open();
+
+  } catch (err: any) {
+  console.log(err); // Add this to see the full error in console
+  const message = err.response?.data?.message || "Failed to initiate payment.";
+  setError(message);
+}
+}
 
   /**
    * ADMIN ACTIONS: Edit & Delete

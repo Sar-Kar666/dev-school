@@ -38,6 +38,7 @@ export default async function PurchasedCourse() {
             id={item.course.id} 
             imageUrl={item.course.imageUrl || "/thumbnail.png"}
             title={item.course.title}
+            price={item.course.price}
             description={item.course.description}
             createdAt={format(new Date(item.course.createdAt), "MMM dd, yyyy")}
           />

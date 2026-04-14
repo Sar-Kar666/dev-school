@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import Script from "next/script";
 
 
 const geistSans = Geist({
@@ -37,6 +38,10 @@ export default function RootLayout({
         </main>
    
         <Footer/>
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="lazyOnload" // Loads when the browser is idle
+        />
       </body>
     </html>
   );
