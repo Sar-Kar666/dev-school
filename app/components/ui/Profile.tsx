@@ -65,7 +65,7 @@
       </div>
 
       {/* Dropdown Menu */}
-      {dropdown && <Dropdown setDropdown={setDropdown} setUser={setUser} />}
+      {dropdown && <Dropdown setDropdown={setDropdown} setUser={setUser} closeDropdown={() => setDropdown(false)}/>}
     </div>
   ) : (
     <div className="flex items-center gap-4">
@@ -119,7 +119,7 @@
     </div>
   }
 
-  function Dropdown({ setDropdown, setUser }: { setDropdown: (val: boolean) => void, setUser: (val: any) => void }) {
+  function Dropdown({ setDropdown, setUser,closeDropdown}: { setDropdown: (val: boolean) => void, setUser: (val: any) => void,closeDropdown: () => void; }) {
     const router = useRouter();
     const handleLogout = () => {
       Cookies.remove("token");
@@ -127,21 +127,22 @@
       router.push('/');
       setUser(null);
       setDropdown(false);
+      closeDropdown();
     
     };
 
     return (
       <>
-        {/* Invisible backdrop to close dropdown when clicking outside */}
+        
         <div className="fixed inset-0 z-10" onClick={() => setDropdown(false)}></div>
         
         <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-20 overflow-hidden">
-          <div className="py-1">
-            <Link href={"/profile"}><DropdownItem label="My Profile"  /></Link>
-            <Link href="/profile/my-courses">
+          <div className="py-1" >
+            <Link href={"/profile"} onClick={closeDropdown}><DropdownItem label="My Profile"  /></Link>
+            <Link href="/profile/my-courses" onClick={closeDropdown}>
               <DropdownItem label="My Courses" />
             </Link>
-            <Link href="/courses">
+            <Link href="/courses" onClick={closeDropdown}>
             <DropdownItem label="All Courses"/>
             </Link>
             
@@ -163,9 +164,10 @@
 
   function DropdownItem({ label }: { label: string }) {
     return (
-      <button className="flex w-full items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+      <button className="flex w-full items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" >
         <span className="mr-3 text-lg"></span>
         {label}
+        
       </button>
     );
   }

@@ -18,13 +18,12 @@ export function Card({ imageUrl, title, description, createdAt,id,price}: CardPr
 
   return (
     <>
-      <div className="w-full max-w-sm border rounded-2xl flex flex-col h-fit hover:scale-98 transition-transform duration-100 ease-in-out shadow-2xl bg-white overflow-hidden">
+      <div className="w-full max-w-sm border rounded-2xl flex flex-col h-fit hover:scale-98 transition-transform duration-100 ease-in-out shadow-2xl bg-white overflow-hidden" onClick={() => setIsModalOpen(true)}>
         {/* Click image to open */}
         <div className="relative aspect-video overflow-hidden">
           <img
             className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-105"
             src={imageUrl}
-            onClick={() => setIsModalOpen(true)}
             alt={title}
           />
         </div>
