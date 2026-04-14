@@ -94,6 +94,7 @@ export function SigninPage({ onClose, onSignin ,openSignup}: SigninProps) {
               <label className="text-sm font-semibold text-slate-700">Password</label>
               <button type="button" className="text-xs text-blue-600 hover:underline">Forgot password?</button>
             </div> */}
+            <label className="text-sm font-semibold text-slate-700">Password</label>
             <input 
               type="password" 
               disabled={isLoading}
